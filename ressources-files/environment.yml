@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mini-env
+data:
+  AUTH_ADDRESS: auth-api-deploy.default
+  TASKS_FOLDER: "tasks"

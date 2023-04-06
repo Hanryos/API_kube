@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-api-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: task-api
+  template:
+    metadata:
+      labels:
+        app: task-api
+    spec:
+      volumes:
+        - name: database-volume
+          hostPath:
+            path: /data-task
+            type: DirectoryOrCreate
+      containers:
+      - name: task-api
+        image: hanryos/taskapi
+        volumeMounts:
+          - mountPath: /app/tasks
+            name: database-volume
+        env:
+          - name: AUTH_ADDRESS
+            valueFrom:
+              configMapKeyRef:
+                name: mini-env
+                key: AUTH_ADDRESS
+          - name: TASKS_FOLDER
+            valueFrom:
+              configMapKeyRef:
+                name: mini-env
+                key: TASKS_FOLDER
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8000
